@@ -1,3 +1,4 @@
+import * as THREE from 'three
 const preload = () => {
 
   let manager = new THREE.LoadingManager();
