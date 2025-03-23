@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
-	</head>
-	<body>
-		<script type="importmap">
-		  {
-		    "imports": {
-		      "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
-		      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
-		    }
-		  }
-		</script>
-		<script type="module" src="/main.js"></script>
-	</body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js Particles</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js"
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="magic"></div>
+  <script type="module" src="main.js"></script>
+
+  <script type="x-shader/x-vertex" id="vertexshader">
+    attribute float size;
+    attribute vec3 customColor;
+    varying vec3 vColor;
+    void main() {
+      vColor = customColor;
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * (300.0 / -mvPosition.z);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentshader">
+    uniform vec3 color;
+    uniform sampler2D pointTexture;
+    varying vec3 vColor;
+    void main() {
+      gl_FragColor = vec4(color * vColor, 1.0);
+      gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord);
+    }
+  </script>
+</body>
 </html>
